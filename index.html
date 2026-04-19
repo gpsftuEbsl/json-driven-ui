@@ -143,7 +143,10 @@
             try {
                 const response = await fetch(`${GET_GAME_API}?id=${gameId}`, {
                     method: "GET",
-                    headers: { "ngrok-skip-browser-warning": "69420" }
+                    headers: {
+                        "ngrok-skip-browser-warning": "69420",
+                        "x-api-key": "early-intervention-2026-secret"
+                    }
                 });
                 
                 if (!response.ok) throw new Error("劇本載入失敗");

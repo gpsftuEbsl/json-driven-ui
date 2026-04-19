@@ -82,9 +82,8 @@
     <script>
         // === 配置區 ===
         // 🚨 這裡填寫你的 ngrok 網址，結尾不要加斜線
-        const NGROK_BASE_URL = "https://uncontrasting-interalar-jon.ngrok-free.dev"; 
-        const WEBHOOK_URL = `${NGROK_BASE_URL}/webhook/game-choice`;
-        const GET_GAME_API = `${NGROK_BASE_URL}/api/get_game`;
+        const WEBHOOK_URL = `https://uncontrasting-interalar-jon.ngrok-free.dev/webhook/api/choice`;
+        const GET_GAME_API = `https://uncontrasting-interalar-jon.ngrok-free.dev/webhook/get_game`;
 
         const urlParams = new URLSearchParams(window.location.search);
         const btn1El = document.getElementById('btn1');

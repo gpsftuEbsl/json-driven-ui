@@ -82,7 +82,7 @@
     </div>
 
     <script>
-        // === 1. 初始載入：抓取網址列參數 ===
+        // === 初始載入：抓取網址列參數 ===
         const urlParams = new URLSearchParams(window.location.search);
         
         // 更新畫面的共用函數
@@ -129,9 +129,9 @@
         );
 
 
-        // === 2. 與後端溝通的 AJAX 函數 ===
+        // === 與後端溝通的 AJAX 函數 ===
         function sendChoiceToBackend(choiceText) {
-            // TODO: 前端同學，等後端把 ngrok 網址給你後，請貼在這裡！
+            // TODO: 把 ngrok 網址貼在這裡！
             const backendUrl = "https://你的ngrok網址.ngrok-free.app/api/choice"; 
             
             const btn1El = document.getElementById('btn1');
@@ -153,7 +153,7 @@
             })
             .then(response => response.json())
             .then(data => {
-                // === 3. 原地換裝 (SPA 核心) ===
+                // === SPA 換裝 ===
                 // 收到後端傳來的新劇情後，解除按鈕反灰，並呼叫 updateUI 替換畫面！
                 btn1El.disabled = false;
                 btn2El.disabled = false;

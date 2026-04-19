@@ -1,107 +1,182 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="zh-TW">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>情境互動遊戲</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Microsoft JhengHei, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+            text-align: center;
+        }
 
+        /* 圖片容器 */
+        #scene-image {
+            max-width: 100%;
+            height: auto;
+            max-height: 250px; /* 限制圖片高度避免把按鈕擠下去 */
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            display: none; /* 預設隱藏，有圖片時才顯示 */
+        }
+
+        h1 {
+            font-size: 1.5rem; /* 稍微縮小以適應手機 */
+            margin-bottom: 2rem;
+            color: #2c3e50;
+            line-height: 1.4;
+        }
+
+        .btn-container {
+            display: flex;
+            flex-direction: column; /* 改為上下排列，手機比較好點 */
+            gap: 15px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            color: white;
+            width: 100%;
+        }
+
+        #btn1 { background-color: rgb(75, 163, 119); }
+        #btn2 { background-color: rgb(82, 119, 171); }
+        #btn1:hover { background-color: rgb(55, 143, 99); }
+        #btn2:hover { background-color: rgb(62, 99, 151); }
+        
+        button:disabled {
+            background-color: #ccc !important;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+    </style>
 </head>
 
-<style>
-    body {
-        font-family: 'Segoe UI', Microsoft JhengHei, sans-serif;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 75vh;
-        margin: 0;
-        background-color: #f4f7f6;
-        color: #333;
-    }
-
-    h1 {
-        font-size: 2.5rem;
-        margin-bottom: 2rem;
-        color: #2c3e50;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-    }
-
-    .btn-container {
-        display: flex;
-        gap: 150px;
-    }
-
-    button {
-        padding: 12px 30px;
-        font-size: 1rem;
-        font-weight: bold;
-        cursor: pointer;
-        border: none;
-        border-radius: 50px;
-        /* 圓角造型 */
-        transition: all 0.3s ease;
-        /* 平滑轉換動畫 */
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    #btn1 {
-        background-color: rgb(75, 163, 119)
-    }
-
-    #btn2 {
-        background-color: rgb(82, 119, 171)
-    }
-
-    button:hover {
-        color: #f1c40f;
-        /* 鼠標在上面時，文字變成黃色 */
-        cursor: pointer;
-        /* 確保鼠標會變成「小手」形狀 */
-    }
-</style>
-
 <body>
-    <h1 id="title">標題</h1>
+    <img id="scene-image" src="" alt="情境圖片">
+    
+    <h1 id="title">載入中...</h1>
 
     <div class="btn-container">
-        <button id="btn1">按鈕1</button>
-        <button id="btn2">按鈕2</button>
+        <button id="btn1" style="display:none;">按鈕1</button>
+        <button id="btn2" style="display:none;">按鈕2</button>
     </div>
+
     <script>
-        // 1. 取得網址列中的參數字串 (例如 ?text=Hello&b1=點我&b2=取消)
+        // === 1. 初始載入：抓取網址列參數 ===
         const urlParams = new URLSearchParams(window.location.search);
+        
+        // 更新畫面的共用函數
+        function updateUI(text, b1, b2, scene) {
+            // 更新文字 使用innerText確保安全
+            if (text) document.getElementById('title').innerText = text;
+            
+            // 更新圖片 (假設我們用圖片代號對應 GitHub 上的圖片)
+            const imgEl = document.getElementById('scene-image');
+            if (scene) {
+                // 如果後端有傳 scene (例如 'library')，就去抓 images/library.jpg
+                // 注意：前端要在專案裡建一個 images 資料夾放圖！
+                imgEl.src = `./images/${scene}.jpg`;
+                imgEl.style.display = "block";
+            } else {
+                imgEl.style.display = "none";
+            }
 
-        // 2. 擷取特定的參數值
-        const titleText = urlParams.get('text'); // 取得 text 參數
-        const btn1Text = urlParams.get('b1');    // 取得 b1 參數
-        const btn2Text = urlParams.get('b2');    // 取得 b2 參數
+            // 更新按鈕 1
+            const btn1El = document.getElementById('btn1');
+            if (b1) {
+                btn1El.innerText = b1;
+                btn1El.style.display = "block";
+            } else {
+                btn1El.style.display = "none";
+            }
 
-        // 3. 如果參數存在，則更新 HTML 元素的內容
-        if (titleText) {
-            document.getElementById('title').innerText = titleText;
+            // 更新按鈕 2
+            const btn2El = document.getElementById('btn2');
+            if (b2) {
+                btn2El.innerText = b2;
+                btn2El.style.display = "block";
+            } else {
+                btn2El.style.display = "none";
+            }
         }
 
-        if (btn1Text) {
-            document.getElementById('btn1').innerText = btn1Text;
+        // 第一次載入網頁時，用網址列參數更新畫面
+        updateUI(
+            urlParams.get('text'), 
+            urlParams.get('b1'), 
+            urlParams.get('b2'), 
+            urlParams.get('scene')
+        );
+
+
+        // === 2. 與後端溝通的 AJAX 函數 ===
+        function sendChoiceToBackend(choiceText) {
+            // TODO: 前端同學，等後端把 ngrok 網址給你後，請貼在這裡！
+            const backendUrl = "https://你的ngrok網址.ngrok-free.app/api/choice"; 
+            
+            const btn1El = document.getElementById('btn1');
+            const btn2El = document.getElementById('btn2');
+
+            // 發送前，把按鈕變反灰，防止連點
+            btn1El.disabled = true;
+            btn2El.disabled = true;
+            document.getElementById('title').innerText = "大腦思考中，請稍後...";
+
+            // 發送 POST 請求給後端
+            fetch(backendUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ 
+                    choice: choiceText,
+                    userId: urlParams.get('uid') // 如果網址有帶 uid 就順便傳回
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // === 3. 原地換裝 (SPA 核心) ===
+                // 收到後端傳來的新劇情後，解除按鈕反灰，並呼叫 updateUI 替換畫面！
+                btn1El.disabled = false;
+                btn2El.disabled = false;
+                
+                // 假設後端回傳格式為: { text: "...", b1: "...", b2: "...", scene: "..." }
+                updateUI(data.text, data.b1, data.b2, data.scene);
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("網路連線出錯了，請重試！");
+                btn1El.disabled = false;
+                btn2El.disabled = false;
+            });
         }
 
-        if (btn2Text) {
-            document.getElementById('btn2').innerText = btn2Text;
-        }
-
-        // 1. 選取按鈕元素
-        const button1 = document.getElementById('btn1');
-        const button2 = document.getElementById('btn2');
-
-        // 2. 為第一個按鈕加入點擊事件
-        button1.addEventListener('click', function () {
-            alert('你選了: ' + button1.innerText);
+        // 綁定點擊事件
+        document.getElementById('btn1').addEventListener('click', function () {
+            sendChoiceToBackend(this.innerText);
         });
 
-        // 3. 為第二個按鈕加入點擊事件
-        button2.addEventListener('click', function () {
-            alert('你選了: ' + button2.innerText);
+        document.getElementById('btn2').addEventListener('click', function () {
+            sendChoiceToBackend(this.innerText);
         });
     </script>
 </body>
-
 </html>

@@ -25,8 +25,8 @@
             max-height: 250px;
             border-radius: 12px;
             margin-bottom: 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            display: none; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            display: none;
         }
 
         h1 {
@@ -34,7 +34,7 @@
             margin-bottom: 2rem;
             color: #2c3e50;
             line-height: 1.6;
-            white-space: pre-wrap; /* 讓換行符號生效 */
+            white-space: pre-wrap;
         }
 
         .btn-container {
@@ -60,19 +60,13 @@
 
         #btn1 { background-color: rgb(75, 163, 119); }
         #btn2 { background-color: rgb(82, 119, 171); }
-        
-        button:disabled {
-            background-color: #ccc !important;
-            cursor: not-allowed;
-            transform: none !important;
-        }
     </style>
 </head>
 
 <body>
     <img id="scene-image" src="" alt="情境圖片">
-    
-    <h1 id="title">正在從大腦下載劇本...</h1>
+
+    <h1 id="title">載入劇情中...</h1>
 
     <div class="btn-container">
         <button id="btn1" style="display:none;">選項一</button>
@@ -80,119 +74,39 @@
     </div>
 
     <script>
-        // === 配置區 ===
-        // 🚨 這裡填寫你的 ngrok 網址，結尾不要加斜線
-        const WEBHOOK_URL = `https://uncontrasting-interalar-jon.ngrok-free.dev/webhook/api/choice`;
-        const GET_GAME_API = `https://uncontrasting-interalar-jon.ngrok-free.dev/webhook/get_game`;
-
         const urlParams = new URLSearchParams(window.location.search);
         const btn1El = document.getElementById('btn1');
         const btn2El = document.getElementById('btn2');
         const titleEl = document.getElementById('title');
 
-        // 更新 UI 的共用函數
-        function updateUI(text, b1, b2, scene) {
-            if (text) titleEl.innerText = text;
-            
-            // 處理圖片
-            const imgEl = document.getElementById('scene-image');
-            if (scene) {
-                imgEl.src = `./images/${scene}.jpg`;
-                imgEl.style.display = "block";
-            } else {
-                imgEl.style.display = "none";
-            }
+        function initGame() {
+            const story = urlParams.get('story');
+            const opt1 = urlParams.get('opt1');
+            const opt2 = urlParams.get('opt2');
 
-            // 處理按鈕 1
-            if (b1) {
-                btn1El.innerText = b1;
-                btn1El.style.display = "block";
-            } else {
-                btn1El.style.display = "none";
-            }
+            document.getElementById('scene-image').style.display = 'none';
 
-            // 處理按鈕 2
-            if (b2) {
-                btn2El.innerText = b2;
-                btn2El.style.display = "block";
-            } else {
-                btn2El.style.display = "none";
-            }
-            
-            // 解除禁用
-            btn1El.disabled = false;
-            btn2El.disabled = false;
-        }
-
-        // === 核心功能：憑 ID 去後端拿劇本 ===
-        async function initGame() {
-            const gameId = urlParams.get('id');
-            
-            if (!gameId) {
-                // 如果沒帶 ID，嘗試相容舊版的 text 參數，如果都沒帶就顯示錯誤
-                const legacyText = urlParams.get('text');
-                if (legacyText) {
-                    updateUI(legacyText, urlParams.get('b1'), urlParams.get('b2'), urlParams.get('scene'));
-                } else {
-                    titleEl.innerText = "找不到遊戲編號，請從 LINE 重新進入。";
-                }
+            if (!story || !opt1 || !opt2) {
+                titleEl.innerText = '缺少故事參數，請從 LINE 重新進入。';
+                btn1El.style.display = 'none';
+                btn2El.style.display = 'none';
                 return;
             }
 
-            try {
-                const response = await fetch(`${GET_GAME_API}?id=${gameId}`, {
-                    method: "GET",
-                    headers: {
-                        "ngrok-skip-browser-warning": "69420",
-                        "x-api-key": "early-intervention-2026-secret"
-                    }
-                });
-                
-                if (!response.ok) throw new Error("劇本載入失敗");
-                
-                const data = await response.json();
-                updateUI(data.text, data.b1, data.b2, data.scene);
-            } catch (error) {
-                console.error("Fetch Error:", error);
-                titleEl.innerText = "無法連線至後端大腦，請確認伺服器已啟動。";
-            }
+            titleEl.innerText = story;
+            btn1El.innerText = opt1;
+            btn2El.innerText = opt2;
+            btn1El.style.display = 'block';
+            btn2El.style.display = 'block';
         }
 
-        // === 送出玩家選擇 ===
-        async function sendChoice(choiceText) {
-            btn1El.disabled = true;
-            btn2El.disabled = true;
-            titleEl.innerText = "大腦思考中，請稍後...";
-
-            try {
-                const response = await fetch(WEBHOOK_URL, {
-                    method: "POST",
-                    headers: { 
-                        "Content-Type": "application/json",
-                        "ngrok-skip-browser-warning": "69420" 
-                    },
-                    body: JSON.stringify({ 
-                        choice: choiceText,
-                        userId: urlParams.get('uid') 
-                    })
-                });
-                
-                const data = await response.json();
-                // n8n 回傳新劇情，立刻更新畫面
-                updateUI(data.text, data.b1, data.b2, data.scene);
-            } catch (error) {
-                console.error("Error:", error);
-                alert("網路連線出錯了，請重試！");
-                btn1El.disabled = false;
-                btn2El.disabled = false;
-            }
+        function sendChoice(choiceText) {
+            alert('你選了: ' + choiceText);
         }
 
-        // 綁定事件
         btn1El.addEventListener('click', () => sendChoice(btn1El.innerText));
         btn2El.addEventListener('click', () => sendChoice(btn2El.innerText));
 
-        // 頁面載入後自動啟動
         window.onload = initGame;
     </script>
 </body>

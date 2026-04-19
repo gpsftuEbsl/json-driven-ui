@@ -145,7 +145,11 @@
             // 發送 POST 請求給後端
             fetch(backendUrl, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { 
+                    "Content-Type": "application/json",
+                    // 加下面這行 用來破解 ngrok 免費版的攔截網頁
+                    "ngrok-skip-browser-warning": "69420" 
+                },
                 body: JSON.stringify({ 
                     choice: choiceText,
                     userId: urlParams.get('uid') // 如果網址有帶 uid 就順便傳回

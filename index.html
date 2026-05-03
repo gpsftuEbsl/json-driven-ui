@@ -99,8 +99,7 @@
 
         // 更新 UI 的共用函數
         function updateUI(text, b1, b2, scene) {
-            if (text) titleEl.innerText = text;
-
+            if (text) titleEl.innerText = text + "(測試scene裡面是" + scene + ")";
             // 處理圖片
             const imgEl = document.getElementById('scene-image');
             if (scene) {

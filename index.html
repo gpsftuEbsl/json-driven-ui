@@ -68,6 +68,37 @@
             background-color: rgb(82, 119, 171);
         }
 
+        .title-container {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+            max-width: 350px;
+            margin-bottom: 2rem;
+        }
+
+        #title {
+            margin-bottom: 0;
+            flex: 1;
+            text-align: left;
+        }
+
+        #speakBtn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            padding: 0;
+            background-color: #f39c12;
+            color: white;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
         button:disabled {
             background-color: #ccc !important;
             cursor: not-allowed;
@@ -79,7 +110,10 @@
 <body>
     <img id="scene-image" src="./image/running.png" alt="情境圖片">
 
-    <h1 id="title">正在從大腦下載劇本...</h1>
+    <div class="title-container">
+        <h1 id="title">正在從大腦下載劇本...</h1>
+        <button id="speakBtn" style="display:none;" title="唸故事給我聽">🔊</button>
+    </div>
 
     <div class="btn-container">
         <button id="btn1" style="display:none;">選項一</button>
@@ -99,10 +133,32 @@
         const btn1El = document.getElementById('btn1');
         const btn2El = document.getElementById('btn2');
         const titleEl = document.getElementById('title');
+        const speakBtn = document.getElementById('speakBtn');
+
+        // === 語音朗讀功能 (Web Speech API) ===
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // 停止之前的語音
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'zh-TW';
+                utterance.rate = 1.0; // 語速
+                utterance.pitch = 1.1; // 音調稍微調高一點，比較可愛
+                window.speechSynthesis.speak(utterance);
+            }
+        }
 
         // 更新 UI 的共用函數
         function updateUI(text, b1, b2, scene) {
-            if (text) titleEl.innerText = text + "(測試scene裡面是" + scene + ")" + "這是第幾題:" + Num;
+            if (text) {
+                titleEl.innerText = text + "(測試scene裡面是" + scene + ")" + "這是第幾題:" + Num;
+                
+                // 顯示並綁定朗讀按鈕
+                speakBtn.style.display = 'flex';
+                speakBtn.onclick = () => speakText(text);
+                
+                // 嘗試自動朗讀 (若是玩家點擊選項後觸發，通常會成功)
+                speakText(text);
+            }
             // 處理圖片
             const imgEl = document.getElementById('scene-image');
             if (scene) {

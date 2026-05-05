@@ -174,7 +174,7 @@
         }
 
         // === 送出玩家選擇 ===
-        async function sendChoice(choiceText) {
+        async function sendChoice(choiceText, IsLast) {
             btn1El.disabled = true;
             btn2El.disabled = true;
             titleEl.innerText = "大腦思考中，請稍後...";
@@ -194,7 +194,11 @@
 
                 const data = await response.json();
                 // n8n 回傳新劇情，立刻更新畫面
-                updateUI(data.text, data.b1, data.b2, data.scene);
+                if (IsLast) {
+                    //等一下改
+                } else {
+                    updateUI(data.text, data.b1, data.b2, data.scene);
+                }
             } catch (error) {
                 console.error("Error:", error);
                 alert("網路連線出錯了，請重試！");
@@ -209,18 +213,18 @@
             rightNum++;
             Num++;
             if (Num <= 4) {
-                sendChoice(btn1El.innerText);
+                sendChoice(btn1El.innerText, 0);
             } else {
-                sendLastChoice(btn1El.innerText);
+                sendChoice(btn1El.innerText, 1);
             }
         });
         btn2El.addEventListener('click', () => {
             chooseRight = 0;
             Num++;
             if (Num <= 4) {
-                sendChoice(btn2El.innerText);
+                sendChoice(btn2El.innerText, 0);
             } else {
-                sendLastChoice(btn2El.innerText);
+                sendChoice(btn2El.innerText, 1);
             }
         });
 

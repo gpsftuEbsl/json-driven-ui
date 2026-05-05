@@ -87,6 +87,9 @@
     </div>
 
     <script>
+        let chooseRight = 0; //記錄當下是否對
+        let rightNum = 0; //紀錄答對題數
+        let Num = 0; //紀錄當前題數
         // === 配置區 ===
         // 🚨 這裡填寫你的 ngrok 網址，結尾不要加斜線
         const WEBHOOK_URL = `https://uncontrasting-interalar-jon.ngrok-free.dev/webhook/api/choice`;
@@ -201,8 +204,17 @@
         }
 
         // 綁定事件
-        btn1El.addEventListener('click', () => sendChoice(btn1El.innerText));
-        btn2El.addEventListener('click', () => sendChoice(btn2El.innerText));
+        btn1El.addEventListener('click', () => {
+            chooseRight = 1;
+            rightNum++;
+            Num++;
+            sendChoice(btn1El.innerText);
+        });
+        btn2El.addEventListener('click', () => {
+            chooseRight = 0;
+            Num++;
+            sendChoice(btn2El.innerText);
+        });
 
         // 頁面載入後自動啟動
         window.onload = initGame;

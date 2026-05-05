@@ -78,10 +78,52 @@
             margin-bottom: 2rem;
         }
 
-        #title {
-            margin-bottom: 0;
+        /* 故事對話框造型 */
+        .speech-bubble {
+            position: relative;
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 16px 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 3px solid #cbd5e1; /* 圓潤的邊框 */
+            margin: 0;
             flex: 1;
             text-align: left;
+            font-size: 1.2rem;
+            color: #334155;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            font-weight: bold; /* 讓字體再粗一點更像童書 */
+        }
+
+        /* 下方的小尖角 (白底) */
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 12px 12px 0;
+            border-style: solid;
+            border-color: #ffffff transparent transparent transparent;
+            display: block;
+            width: 0;
+            z-index: 1;
+        }
+
+        /* 下方的小尖角 (邊框) */
+        .speech-bubble::before {
+            content: '';
+            position: absolute;
+            bottom: -16px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 15px 15px 0;
+            border-style: solid;
+            border-color: #cbd5e1 transparent transparent transparent;
+            display: block;
+            width: 0;
+            z-index: 0;
         }
 
         #speakBtn {
@@ -140,7 +182,7 @@
 
 <body>
     <div class="title-container">
-        <h1 id="title"><span class="loader"></span> 故事加載中...</h1>
+        <h1 id="title" class="speech-bubble"><span class="loader"></span> 故事加載中...</h1>
         <button id="speakBtn" style="display:none;" title="唸故事給我聽">🔊</button>
     </div>
 
@@ -210,7 +252,9 @@
         // 更新 UI 的共用函數
         function updateUI(text, b1, b2, scene) {
             if (text) {
-                titleEl.innerText = text + "(測試scene裡面是" + scene + ")" + "這是第幾題:" + Num;
+                // 將測試文字註解掉，只顯示純故事
+                // titleEl.innerText = text + "(測試scene裡面是" + scene + ")" + "這是第幾題:" + Num;
+                titleEl.innerText = text;
                 
                 // 顯示並綁定朗讀按鈕
                 speakBtn.style.display = 'flex';

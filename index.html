@@ -28,6 +28,8 @@
             margin-bottom: 20px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             display: none;
+            opacity: 0; /* 預設先隱藏，載入完再淡入 */
+            transition: opacity 0.4s ease-in-out;
         }
 
         h1 {
@@ -201,6 +203,18 @@
         let chooseRight = 0; //記錄當下是否對
         let rightNum = 0; //紀錄答對題數
         let Num = 0; //紀錄當前題數
+        // === 圖片預載清單 (把常用的先載入) ===
+        const PRELOAD_IMAGES = [
+            'sharing.png', 'hugging.png', 'bad_end_crying.png', 'bad_end_time_out.png',
+            'neutral.png', 'running.png', 'breathing.png'
+        ];
+        function preloadImages() {
+            PRELOAD_IMAGES.forEach(file => {
+                const img = new Image();
+                img.src = `./image/${file}`;
+            });
+        }
+
         // === 配置區 ===
         // 🚨 這裡填寫你的 ngrok 網址，結尾不要加斜線
         const WEBHOOK_URL = `https://uncontrasting-interalar-jon.ngrok-free.dev/webhook/api/choice`;
@@ -266,6 +280,11 @@
             // 處理圖片
             const imgEl = document.getElementById('scene-image');
             if (scene) {
+                // 圖片先透明，等載入完再顯示，避免與文字落差太大
+                imgEl.style.opacity = 0;
+                imgEl.onload = () => {
+                    imgEl.style.opacity = 1;
+                };
                 imgEl.src = `./image/${scene}`;
                 imgEl.style.display = "block";
             } else {
@@ -406,7 +425,10 @@
         });
 
         // 頁面載入後自動啟動
-        window.onload = initGame;
+        window.onload = () => {
+            initGame();
+            preloadImages(); // 啟動預載
+        };
     </script>
 </body>
 

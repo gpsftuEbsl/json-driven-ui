@@ -104,6 +104,23 @@
             cursor: not-allowed;
             transform: none !important;
         }
+
+        /* 轉圈圈動畫 CSS */
+        .loader {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 4px solid rgba(44, 62, 80, 0.2);
+            border-radius: 50%;
+            border-top-color: #f39c12; /* 橘黃色，搭配你的按鈕 */
+            animation: spin 1s linear infinite;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 
@@ -111,7 +128,7 @@
     <img id="scene-image" src="./image/running.png" alt="情境圖片">
 
     <div class="title-container">
-        <h1 id="title">正在從大腦下載劇本...</h1>
+        <h1 id="title"><span class="loader"></span> 故事加載中...</h1>
         <button id="speakBtn" style="display:none;" title="唸故事給我聽">🔊</button>
     </div>
 
@@ -258,7 +275,7 @@
         async function sendChoice(choiceText, IsLast) {
             btn1El.disabled = true;
             btn2El.disabled = true;
-            titleEl.innerText = "大腦思考中，請稍後...";
+            titleEl.innerHTML = '<span class="loader"></span> 故事加載中...';
 
             try {
                 const response = await fetch(WEBHOOK_URL, {

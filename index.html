@@ -195,7 +195,7 @@
                 const data = await response.json();
                 // n8n 回傳新劇情，立刻更新畫面
                 if (IsLast) {
-                    //等一下改
+                    result();
                 } else {
                     updateUI(data.text, data.b1, data.b2, data.scene);
                 }
@@ -206,7 +206,11 @@
                 btn2El.disabled = false;
             }
         }
-
+        async function result() {
+            btn1El.style.display = "none";
+            btn2El.style.display = "none";
+            titleEl.innerText = "恭喜您完成了" + num + "題" + "，答對了" + rightNum + "題！";
+        }
         // 綁定事件
         btn1El.addEventListener('click', () => {
             chooseRight = 1;

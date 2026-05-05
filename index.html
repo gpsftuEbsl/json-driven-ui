@@ -208,12 +208,20 @@
             chooseRight = 1;
             rightNum++;
             Num++;
-            sendChoice(btn1El.innerText);
+            if (Num <= 4) {
+                sendChoice(btn1El.innerText);
+            } else {
+                sendLastChoice(btn1El.innerText);
+            }
         });
         btn2El.addEventListener('click', () => {
             chooseRight = 0;
             Num++;
-            sendChoice(btn2El.innerText);
+            if (Num <= 4) {
+                sendChoice(btn2El.innerText);
+            } else {
+                sendLastChoice(btn2El.innerText);
+            }
         });
 
         // 頁面載入後自動啟動

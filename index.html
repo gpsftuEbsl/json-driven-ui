@@ -411,6 +411,9 @@
         }
         function flashImage() {
             const imgEl = document.getElementById('scene-image');
+            imgEl.src = ".image/rightAnswerForFront.png";
+            const titleEl = document.getElementById('title');
+            titleEl.innerText = "很棒喔~";
             // 定義動畫關鍵影格 (Keyframes)
             const keyframes = [
                 { opacity: 1 },   // 開始
@@ -419,7 +422,7 @@
             ];
             // 定義動畫設定
             const options = {
-                duration: 500,    // 持續 0.5 秒
+                duration: 1500,    // 持續 1.5 秒
                 iterations: 1,    // 閃一次
                 easing: 'ease-in-out'
             };
@@ -431,9 +434,6 @@
             chooseRight = 1;
             rightNum++;
             Num++;
-            titleEl.innerText = "很棒喔~";
-            const imgEl = document.getElementById("scene-image");
-            imgEl.src = ".image/rightAnswerForFront.png";
             requestAnimationFrame(() => {
                 flashImage();
             });

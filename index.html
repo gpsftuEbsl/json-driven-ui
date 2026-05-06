@@ -284,7 +284,7 @@
             btn.style.pointerEvents = "auto";
         }
 
-        // === 輪詢後端快取狀態 (帶有 3.5 秒強制解鎖保險) ===
+        // === 輪詢後端快取狀態 (帶有 5 秒強制解鎖保險) ===
         function pollButtonStatus(b1Text, b2Text) {
             if (currentPolling) { clearInterval(currentPolling); currentPolling = null; }
 
@@ -295,8 +295,8 @@
             currentPolling = setInterval(async () => {
                 const elapsed = Date.now() - startTime;
                 
-                // 🚀 超時保險：如果超過 3.5 秒還沒好，強制解鎖，避免卡死
-                if (elapsed > 3500) {
+                // 🚀 超時保險：如果超過 5 秒還沒好，強制解鎖，避免卡死
+                if (elapsed > 5000) {
                     stopPollingAndUnlock("Timeout Force Unlock");
                     return;
                 }

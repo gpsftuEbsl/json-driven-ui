@@ -223,10 +223,13 @@
 
         // === 配置區 ===
         // 🚨 這裡填寫你的 ngrok 網址，結尾不要加斜線
-        const WEBHOOK_URL = `https://uncontrasting-interalar-jon.ngrok-free.dev/webhook/api/choice`;
-        const GET_GAME_API = `https://uncontrasting-interalar-jon.ngrok-free.dev/webhook/get_game`;
+        const NGROK_BASE = `https://uncontrasting-interalar-jon.ngrok-free.dev`;
+        const WEBHOOK_URL = `${NGROK_BASE}/webhook/api/choice`;
+        const GET_GAME_API = `${NGROK_BASE}/webhook/get_game`;
+        const CHECK_CACHE_API = `${NGROK_BASE}/webhook/api/check_cache`;
 
         const urlParams = new URLSearchParams(window.location.search);
+        let currentPolling = null; // 用於存放輪詢計時器
         const btn1El = document.getElementById('btn1');
         const btn2El = document.getElementById('btn2');
         const titleEl = document.getElementById('title');
@@ -269,6 +272,38 @@
             }
         }
 
+        // 輪詢後端快取狀態，好了才讓按鈕可以按
+        async function pollButtonStatus(b1Text, b2Text) {
+            if (currentPolling) clearInterval(currentPolling);
+
+            currentPolling = setInterval(async () => {
+                try {
+                    const uid = urlParams.get('uid') || 'anonymous';
+                    const res = await fetch(`${CHECK_CACHE_API}?userId=${uid}&b1=${encodeURIComponent(b1Text)}&b2=${encodeURIComponent(b2Text)}`, {
+                        headers: { "ngrok-skip-browser-warning": "69420" }
+                    });
+                    const status = await res.json();
+
+                    if (status.b1_ready) {
+                        btn1El.disabled = false;
+                        btn1El.style.opacity = "1";
+                    }
+                    if (status.b2_ready) {
+                        btn2El.disabled = false;
+                        btn2El.style.opacity = "1";
+                    }
+
+                    // 如果都好了，就停止輪詢
+                    if (status.b1_ready && status.b2_ready) {
+                        clearInterval(currentPolling);
+                        currentPolling = null;
+                    }
+                } catch (e) {
+                    console.error("Polling error:", e);
+                }
+            }, 800); // 每 0.8 秒檢查一次
+        }
+
         // 更新 UI 的共用函數
         function updateUI(text, b1, b2, scene) {
             if (text) {
@@ -297,6 +332,12 @@
                 imgEl.style.display = "none";
             }
 
+            // 預設先禁用，等待後端預處理完成
+            btn1El.disabled = true;
+            btn2El.disabled = true;
+            btn1El.style.opacity = "0.5";
+            btn2El.style.opacity = "0.5";
+
             // 處理按鈕 1
             if (b1) {
                 btn1El.innerText = b1;
@@ -313,9 +354,10 @@
                 btn2El.style.display = "none";
             }
 
-            // 解除禁用
-            btn1El.disabled = false;
-            btn2El.disabled = false;
+            // 開始檢查預處理狀態
+            if (b1 || b2) {
+                pollButtonStatus(b1 || "", b2 || "");
+            }
         }
 
         // === 核心功能：憑 ID 去後端拿劇本 ===

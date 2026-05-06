@@ -28,7 +28,8 @@
             margin-bottom: 20px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             display: none;
-            opacity: 0; /* 預設先隱藏，載入完再淡入 */
+            opacity: 0;
+            /* 預設先隱藏，載入完再淡入 */
             transition: opacity 0.4s ease-in-out;
         }
 
@@ -87,7 +88,8 @@
             border-radius: 20px;
             padding: 16px 20px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-            border: 3px solid #cbd5e1; /* 圓潤的邊框 */
+            border: 3px solid #cbd5e1;
+            /* 圓潤的邊框 */
             margin: 0;
             flex: 1;
             text-align: left;
@@ -95,7 +97,8 @@
             color: #334155;
             line-height: 1.6;
             white-space: pre-wrap;
-            font-weight: bold; /* 讓字體再粗一點更像童書 */
+            font-weight: bold;
+            /* 讓字體再粗一點更像童書 */
         }
 
         /* 下方的小尖角 (白底) */
@@ -156,14 +159,17 @@
             height: 24px;
             border: 4px solid rgba(44, 62, 80, 0.2);
             border-radius: 50%;
-            border-top-color: #f39c12; /* 橘黃色，搭配你的按鈕 */
+            border-top-color: #f39c12;
+            /* 橘黃色，搭配你的按鈕 */
             animation: spin 1s linear infinite;
             vertical-align: middle;
             margin-right: 10px;
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* 免責聲明 CSS */
@@ -240,18 +246,18 @@
                 window.speechSynthesis.cancel(); // 停止之前的語音
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = 'zh-TW';
-                
+
                 // 讓聲音稍微放慢、調高音調，聽起來比較年輕溫柔
-                utterance.rate = 0.95; 
-                utterance.pitch = 1.3; 
+                utterance.rate = 0.95;
+                utterance.pitch = 1.3;
 
                 // 嘗試從裝置中挑選「比較好聽的女性聲音」 (因不同手機/電腦而異)
                 if (availableVoices.length === 0) {
                     availableVoices = window.speechSynthesis.getVoices();
                 }
-                
-                const gentleVoice = availableVoices.find(v => 
-                    v.lang.includes('zh') && 
+
+                const gentleVoice = availableVoices.find(v =>
+                    v.lang.includes('zh') &&
                     (v.name.includes('Yating') || v.name.includes('Mei-Jia') || v.name.includes('Xiaoxiao') || v.name.includes('Google 國語'))
                 ) || availableVoices.find(v => v.lang.includes('zh-TW'));
 
@@ -269,11 +275,11 @@
                 // 將測試文字註解掉，只顯示純故事
                 // titleEl.innerText = text + "(測試scene裡面是" + scene + ")" + "這是第幾題:" + Num;
                 titleEl.innerText = text;
-                
+
                 // 顯示並綁定朗讀按鈕
                 speakBtn.style.display = 'flex';
                 speakBtn.onclick = () => speakText(text);
-                
+
                 // 嘗試自動朗讀 (若是玩家點擊選項後觸發，通常會成功)
                 speakText(text);
             }
@@ -403,11 +409,32 @@
             });
             titleEl.innerText = "恭喜您完成了" + Num + "題" + "，答對了" + rightNum + "題！";
         }
+        function flashImage() {
+            const imgE1 = document.getElementById('scene-image');
+            // 定義動畫關鍵影格 (Keyframes)
+            const keyframes = [
+                { opacity: 1 },   // 開始
+                { opacity: 0 },   // 中間 (隱藏)
+                { opacity: 1 }    // 結束
+            ];
+            // 定義動畫設定
+            const options = {
+                duration: 500,    // 持續 0.5 秒
+                iterations: 1,    // 閃一次
+                easing: 'ease-in-out'
+            };
+            // 執行動畫
+            imgE1.animate(keyframes, options);
+        }
         // 綁定事件
         btn1El.addEventListener('click', () => {
             chooseRight = 1;
             rightNum++;
             Num++;
+            titleEl.innerText = "很棒喔~";
+            const imgEl = document.getElementById("scene-image");
+            imgEl.src = ".image/rightAnswerForFront.png";
+            flashImage();
             if (Num <= 4) {
                 sendChoice(btn1El.innerText, 0);
             } else {

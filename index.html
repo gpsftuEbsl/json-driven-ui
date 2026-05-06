@@ -224,9 +224,9 @@
         // === 配置區 ===
         // 🚨 這裡填寫你的 ngrok 網址，結尾不要加斜線
         const NGROK_BASE = `https://uncontrasting-interalar-jon.ngrok-free.dev`;
-        const WEBHOOK_URL = `${NGROK_BASE}/webhook/api/choice`;
-        const GET_GAME_API = `${NGROK_BASE}/webhook/get_game`;
-        const CHECK_CACHE_API = `${NGROK_BASE}/webhook/api/check_cache`;
+        const WEBHOOK_URL = `${NGROK_BASE}/api/choice`;
+        const GET_GAME_API = `${NGROK_BASE}/api/get_game`;
+        const CHECK_CACHE_API = `${NGROK_BASE}/api/check_cache`;
 
         const urlParams = new URLSearchParams(window.location.search);
         let currentPolling = null; // 用於存放輪詢計時器

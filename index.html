@@ -311,10 +311,17 @@
                     
                     const status = await res.json();
 
-                    // 誰好了就先解誰
-                    if (status.b1_ready) unlockBtn(btn1El);
-                    if (status.b2_ready) unlockBtn(btn2El);
+                    // 🚀 個別檢查，誰好了就立刻解鎖誰，不互等
+                    if (status.b1_ready && btn1El.disabled) {
+                        console.log("[Cache] B1 Ready, unlocking...");
+                        unlockBtn(btn1El);
+                    }
+                    if (status.b2_ready && btn2El.disabled) {
+                        console.log("[Cache] B2 Ready, unlocking...");
+                        unlockBtn(btn2El);
+                    }
 
+                    // 如果全部都好了，才停止輪詢
                     if (status.b1_ready && status.b2_ready) {
                         stopPollingAndUnlock("All Ready");
                     }

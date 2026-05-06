@@ -410,9 +410,7 @@
             titleEl.innerText = "恭喜您完成了" + Num + "題" + "，答對了" + rightNum + "題！";
         }
         function flashImage() {
-            const imgEl = document.getElementById('scene-image');
-            imgEl.src = ".image/rightAnswerForFront.png";
-            const titleEl = document.getElementById('title');
+            img.src = ".image/rightAnswerForFront.png";
             titleEl.innerText = "很棒喔~";
             // 定義動畫關鍵影格 (Keyframes)
             const keyframes = [
@@ -434,9 +432,7 @@
             chooseRight = 1;
             rightNum++;
             Num++;
-            requestAnimationFrame(() => {
-                flashImage();
-            });
+            flashImage();
             if (Num <= 4) {
                 sendChoice(btn1El.innerText, 0);
             } else {

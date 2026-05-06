@@ -440,7 +440,8 @@
                     },
                     body: JSON.stringify({
                         choice: choiceText,
-                        userId: urlParams.get('uid')
+                        userId: urlParams.get('uid'),
+                        isResult: !!IsLast
                     })
                 });
 

@@ -407,7 +407,15 @@
                     userId: urlParams.get('uid')
                 })
             });
-            titleEl.innerText = "恭喜您完成了" + Num + "題" + "，答對了" + rightNum + "題！";
+
+            // 計算星星：亮的星星代表答對題數，暗的代表答錯
+            const totalStars = 5;
+            const stars = "⭐".repeat(rightNum) + "☆".repeat(Math.max(0, totalStars - rightNum));
+            
+            // 放大字體並顯示結果
+            titleEl.style.fontSize = "1.6rem";
+            titleEl.style.textAlign = "center";
+            titleEl.innerHTML = `<div style="margin-bottom:10px;">${stars}</div>恭喜您完成了 ${Num} 題<br>答對了 ${rightNum} 題！`;
         }
         function flashImage() {
             img.src = ".image/rightAnswerForFront.png";

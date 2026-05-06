@@ -303,21 +303,22 @@
 
                 try {
                     const uid = urlParams.get('uid') || 'anonymous';
-                    const res = await fetch(
-                        `${CHECK_CACHE_API}?userId=${uid}&b1=${encodeURIComponent(btn1OriginalText)}&b2=${encodeURIComponent(btn2OriginalText)}`,
-                        { headers: { "ngrok-skip-browser-warning": "69420" } }
-                    );
+                    // 🚀 加上時間戳 _t 避免瀏覽器快取舊的 false 結果
+                    const url = `${CHECK_CACHE_API}?userId=${uid}&b1=${encodeURIComponent(btn1OriginalText)}&b2=${encodeURIComponent(btn2OriginalText)}&_t=${Date.now()}`;
+                    
+                    const res = await fetch(url, { headers: { "ngrok-skip-browser-warning": "69420" } });
                     if (!res.ok) throw new Error("Check cache failed");
                     
                     const status = await res.json();
+                    console.log("[Cache Check]", status);
 
                     // 🚀 個別檢查，誰好了就立刻解鎖誰，不互等
                     if (status.b1_ready && btn1El.disabled) {
-                        console.log("[Cache] B1 Ready, unlocking...");
+                        console.log("🔓 Unlocking B1");
                         unlockBtn(btn1El);
                     }
                     if (status.b2_ready && btn2El.disabled) {
-                        console.log("[Cache] B2 Ready, unlocking...");
+                        console.log("🔓 Unlocking B2");
                         unlockBtn(btn2El);
                     }
 

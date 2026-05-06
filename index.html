@@ -303,14 +303,26 @@
 
                 try {
                     const uid = urlParams.get('uid') || 'anonymous';
-                    // 🚀 加上時間戳 _t 避免瀏覽器快取舊的 false 結果
-                    const url = `${CHECK_CACHE_API}?userId=${uid}&b1=${encodeURIComponent(btn1OriginalText)}&b2=${encodeURIComponent(btn2OriginalText)}&_t=${Date.now()}`;
-
-                    const res = await fetch(url, { headers: { "ngrok-skip-browser-warning": "69420" } });
-                    if (!res.ok) throw new Error("Check cache failed");
-
+                    // 🚀 借用已通的 POST /api/choice 路徑來檢查快取，省去改 n8n 的麻煩
+                    const res = await fetch(WEBHOOK_URL, {
+                        method: "POST",
+                        headers: { 
+                            "Content-Type": "application/json",
+                            "ngrok-skip-browser-warning": "69420" 
+                        },
+                        body: JSON.stringify({
+                            choice: "checking", 
+                            userId: uid,
+                            b1: btn1OriginalText,
+                            b2: btn2OriginalText,
+                            isCheck: true
+                        })
+                    });
+                    
+                    if (!res.ok) throw new Error("Check cache via POST failed");
+                    
                     const status = await res.json();
-                    console.log("[Cache Check]", status);
+                    console.log("[Cache Check via POST]", status);
 
                     // 🚀 個別檢查，誰好了就立刻解鎖誰，不互等
                     if (status.b1_ready && btn1El.disabled) {

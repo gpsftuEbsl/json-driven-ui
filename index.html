@@ -224,9 +224,9 @@
         // === 配置區 ===
         // 🚨 這裡填寫你的 ngrok 網址，結尾不要加斜線
         const NGROK_BASE = `https://uncontrasting-interalar-jon.ngrok-free.dev`;
-        const WEBHOOK_URL = `${NGROK_BASE}/api/choice`;
-        const GET_GAME_API = `${NGROK_BASE}/api/get_game`;
-        const CHECK_CACHE_API = `${NGROK_BASE}/api/check_cache`;
+        const WEBHOOK_URL = `${NGROK_BASE}/webhook/api/choice`;
+        const GET_GAME_API = `${NGROK_BASE}/webhook/get_game`;
+        const CHECK_CACHE_API = `${NGROK_BASE}/webhook/api/check_cache`;
 
         const urlParams = new URLSearchParams(window.location.search);
         let currentPolling = null; // 用於存放輪詢計時器
@@ -294,7 +294,7 @@
 
             currentPolling = setInterval(async () => {
                 const elapsed = Date.now() - startTime;
-                
+
                 // 🚀 超時保險：如果超過 30 秒還沒好，強制解鎖，避免卡死
                 if (elapsed > 30000) {
                     stopPollingAndUnlock("Timeout Force Unlock");
@@ -305,10 +305,10 @@
                     const uid = urlParams.get('uid') || 'anonymous';
                     // 🚀 加上時間戳 _t 避免瀏覽器快取舊的 false 結果
                     const url = `${CHECK_CACHE_API}?userId=${uid}&b1=${encodeURIComponent(btn1OriginalText)}&b2=${encodeURIComponent(btn2OriginalText)}&_t=${Date.now()}`;
-                    
+
                     const res = await fetch(url, { headers: { "ngrok-skip-browser-warning": "69420" } });
                     if (!res.ok) throw new Error("Check cache failed");
-                    
+
                     const status = await res.json();
                     console.log("[Cache Check]", status);
 
@@ -365,10 +365,10 @@
             lockBtn(btn2El);
 
             if (b1) { btn1El.innerText = b1; btn1El.style.display = "block"; }
-            else     { btn1El.style.display = "none"; }
+            else { btn1El.style.display = "none"; }
 
             if (b2) { btn2El.innerText = b2; btn2El.style.display = "block"; }
-            else     { btn2El.style.display = "none"; }
+            else { btn2El.style.display = "none"; }
 
             // 開始輪詢，等預處理完成才解鎖
             if (b1 || b2) {
@@ -493,14 +493,14 @@
             rightNum++;
             Num++;
             if (Num <= 4) { sendChoice(btn1El.innerText, 0); }
-            else          { sendChoice(btn1El.innerText, 1); }
+            else { sendChoice(btn1El.innerText, 1); }
         });
         btn2El.addEventListener('click', () => {
             if (btn2El.disabled) return;  // 鎖住的就不執行
             chooseRight = 0;
             Num++;
             if (Num <= 4) { sendChoice(btn2El.innerText, 0); }
-            else          { sendChoice(btn2El.innerText, 1); }
+            else { sendChoice(btn2El.innerText, 1); }
         });
 
         // 頁面載入後自動啟動

@@ -277,11 +277,13 @@
             btn.disabled = true;
             btn.style.opacity = "0.5";
             btn.style.pointerEvents = "none";  // 額外保險：CSS 層面也擋住點擊
+            btn.innerText = "(載入中)";
         }
         function unlockBtn(btn) {
             btn.disabled = false;
             btn.style.opacity = "1";
             btn.style.pointerEvents = "auto";
+            btn.innerText = btn.dataset.text || btn.innerText;
         }
 
         // === 輪詢後端快取狀態 (帶有 30 秒強制解鎖保險) ===
@@ -373,14 +375,21 @@
             }
 
             // ✅ 重點：先鎖死按鈕，再顯示
-            lockBtn(btn1El);
-            lockBtn(btn2El);
+            if (b1) { 
+                btn1El.dataset.text = b1;
+                btn1El.style.display = "block"; 
+                lockBtn(btn1El);
+            } else { 
+                btn1El.style.display = "none"; 
+            }
 
-            if (b1) { btn1El.innerText = b1; btn1El.style.display = "block"; }
-            else { btn1El.style.display = "none"; }
-
-            if (b2) { btn2El.innerText = b2; btn2El.style.display = "block"; }
-            else { btn2El.style.display = "none"; }
+            if (b2) { 
+                btn2El.dataset.text = b2;
+                btn2El.style.display = "block"; 
+                lockBtn(btn2El);
+            } else { 
+                btn2El.style.display = "none"; 
+            }
 
             // 開始輪詢，等預處理完成才解鎖
             if (b1 || b2) {

@@ -277,7 +277,7 @@
             btn.disabled = true;
             btn.style.opacity = "0.5";
             btn.style.pointerEvents = "none";  // 額外保險：CSS 層面也擋住點擊
-            btn.innerText = "(載入中)";
+            btn.innerHTML = '<span class="loader"></span>載入中';
         }
         function unlockBtn(btn) {
             btn.disabled = false;
